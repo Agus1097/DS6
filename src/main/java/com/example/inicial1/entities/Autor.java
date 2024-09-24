@@ -1,30 +1,21 @@
 package com.example.inicial1.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.hibernate.envers.Audited;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
 @Builder
-public class Autor {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Audited
+public class Autor extends Base<Long> {
 
     private String nombre;
 
     private String apellido;
 
     private String biografia;
-
-    @ManyToMany(mappedBy = "autores")
-    private Set<Libro> libros = new HashSet<>();
 }

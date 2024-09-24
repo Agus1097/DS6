@@ -2,23 +2,20 @@ package com.example.inicial1.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
 @Builder
-public class Libro {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Audited
+public class Libro extends Base<Long> {
 
     private String titulo;
 
@@ -32,9 +29,6 @@ public class Libro {
     @JoinColumn(name = "fk_persona")
     private Persona persona;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "libro_autor",
-            joinColumns = @JoinColumn(name = "libro_id"),
-            inverseJoinColumns = @JoinColumn(name = "autor_id"))
-    private Set<Autor> autores = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    private List<Autor> autores = new ArrayList<>();
 }

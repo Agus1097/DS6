@@ -1,64 +1,29 @@
 package com.example.inicial1.controllers;
 
+import com.example.inicial1.controllers.impl.BaseControllerImpl;
 import com.example.inicial1.entities.Persona;
-import com.example.inicial1.services.PersonaService;
-import lombok.RequiredArgsConstructor;
+import com.example.inicial1.services.impl.PersonaServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/personas")
-public class PersonaController {
+public class PersonaController extends BaseControllerImpl<Persona, PersonaServiceImpl> {
 
-    private final PersonaService personaService;
+    public PersonaController(PersonaServiceImpl service) {
+        super(service);
+    }
 
-    @GetMapping
-    public ResponseEntity<?> getAll() {
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByNombreOrApellido(@RequestParam String filtro) {
         try {
-            return ResponseEntity.ok(personaService.findAll());
-        } catch (Exception e) {
+            return ResponseEntity.ok(service.searchByNombreOrApellido(filtro));
+        } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOne(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(personaService.findById(id));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Persona persona) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(personaService.save(persona));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Persona persona) {
-        try {
-            return ResponseEntity.ok(personaService.update(id, persona));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            personaService.delete(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Persona eliminada: " + id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
         }
     }
 }
